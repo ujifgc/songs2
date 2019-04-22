@@ -1,3 +1,4 @@
+```
 [Intro]
 C     C    C/B     C/B
 Am    Am   Abadd9  Abadd9
@@ -69,3 +70,4 @@ Just  don't leave
 F C/B    Am    Am
   Don't leave
 Gsus   Gsus   C
+```
