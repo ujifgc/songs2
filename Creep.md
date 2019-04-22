@@ -1,62 +1,62 @@
 ```
 [Intro]
-G B C Cm
+C 3 E F Fm
 
 [Verse 1]
-                     G                              B
+                     C                              E
 When you were here before, couldn't look you in the eyes
-                    C                         Cm
+                    F                         Fm
 You're just like an angel, your skin makes me cry
-                 G                      B
+                 C                      E
 You float like a feather in a beautiful world
-             C                          Cm
+             F                          Fm
 I wish I was special, you're so fucking special
 
 [Chorus] (play loud)
 G (x3, very short)
-          G            B
+          C            E
 But I'm a creep, I'm a weirdo
-                         C               Cm
+                         F               Fm
 What the hell am I doing here? I don't belong here
 
 [Verse 2]
-                   G                      B
+                   C                      E
 I don't care if it hurts, I wanna have control
-                 C                      Cm
+                 F                      Fm
 I want a perfect body, I want a perfect soul
-              G                    B
+              C                    E
 I want you to notice when I'm not around
-                  C                     Cm
+                  F                     Fm
 You're so fucking special, I wish I was special
 
 [Chorus] (play loud)
 G (x3, very short)
-          G            B
+          C            E
 But I'm a creep, I'm a weirdo
-                         C               Cm
+                         F               Fm
 What the hell am I doing here? I don't belong here
 
 [Bridge] (play loud)
-            G                  B
+            C                  E
 Oooh, oooh, she's running out again...
-C                      Cm                
+F                      Fm                
 She's running out, she run, run, run...
-G     B
+C     E
 Ruuuuuuuun...
-C     Cm
+F     Fm
 Ruuuuuuuuuuun...
 
 [Verse 3] (play soft until the end)
-                   G                   B
+                   C                   E
 Whatever makes you happy, whatever you want
-                  C                     Cm
+                  F                     Fm
 You're so fucking special, I wish I was special
 
 [Chorus]
-          G            B
+          C            E
 But I'm a creep, I'm a weirdo
-                         C               Cm
+                         F               Fm
 What the hell am I doing here? I don't belong here
-          G
+          C
 I don't belong here
 ```
