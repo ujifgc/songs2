@@ -1,0 +1,254 @@
+<!doctype html>
+<html>
+<head>
+<title>Songs</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta charset="utf-8">
+<style>
+html {
+  background-color: #999; font-size: 20px;
+  -webkit-text-size-adjust: none;
+  touch-action: manipulation;
+}
+body, pre, ul, li { margin: 0; padding: 0; }
+li { list-style: none; padding: 0 10px; }
+body { background-color: #fff; display: table-row; }
+span.sizer { visibility: hidden; display: block; font-family: monospace; position: absolute; top: 0; left: 0; }
+pre {
+  display: table-cell;
+  vertical-align: top;
+  padding-left: 2px;
+  position: relative;
+  border-bottom: 2px solid #999;
+}
+pre + pre {
+  border-left: 2px solid #999;
+}
+pre.p50 {
+  width: 50%;
+}
+hr {
+  margin: 0.2em 0; padding: 0;
+}
+hr:first-child {
+  margin-top: 0.5em;
+}
+hr + small {
+  position: absolute;
+  right: 0;
+  margin-top: -0.8em;
+  background-color: #fff;
+}
+</style>
+<script>
+"use strict";
+
+var init = 30, size = init, min = 11, longest = 0, needscroll = 0, currentscroll = 0, scroller = false, fitwide = false;
+
+window.reset = function(event) {
+  fitwide = false;
+  if (scroller) { clearTimeout(scroller); scroller = false; }
+  window.scrollTo(0, 0);
+  document.html = document.body.parentNode;
+  document.text = false;
+  if (event.type != 'DOMContentLoaded' && event.target != document.html) return false;
+  size = init;
+  document.html.onclick = false;
+  var repos = ['ujifgc/songs', 'kshkn/lyrics'];
+  for (let i in repos) {
+    let songlist = 'https://api.github.com/repos/' + repos[i] + '/contents/';
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', songlist);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        document.html.style.fontSize = size + 'px';
+        let songs = JSON.parse(xhr.responseText);
+        let list = '<ul>'
+        for (let j in songs) {
+          if (songs[j].name == 'README.md' || !songs[j].name.match(/.md$/)) continue;
+          list += '<li><a href="' + songs[j].download_url + '" onclick="loadsong(this.href);return false">' + songs[j].name.replace('.md', '') + "</a>";
+        }
+        list += '</ul>';
+        if (i == 0) {
+          pre1.innerHTML = list;
+        }else{
+          pre2.innerHTML = list;
+        }
+      }
+    };
+    xhr.send();
+  }
+};
+
+window.loadsong = function(url) {
+  let xhr = new XMLHttpRequest();
+  xhr.open('GET', url);
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      document.text = xhr.responseText.
+        replace(/\r/g, '\n').
+        replace(/\nCopyright[^\n]*\n*$/g, '').
+        replace(/\n?```\n?/g, '').
+        replace(/\n+$/, '').
+        replace(/^\n+/, '').
+        replace(/\s+\n/g, '\n').
+        replace(/\n\n\n/g, '\n\n').
+        replace(/\]\n+/g, ']\n').
+        replace(/(\[.+\])[\n\s]+/g, '<hr><small>$1</small>').
+        replace(/(^|\n)\s*(припев|вступление|проигрыш|кода|chorus|verse|intro)(.*?)[\s:]*(\n|$)/gi, '<hr><small>[$2$3]</small>').
+        replace(/\n\n\<hr\>/g, '\n<hr>').replace(/^[\s\n]*\<hr\>/g, '<hr>').
+        replace(/(.+)\n(\1\n|\1$)+/g, '$1 *').
+        replace(/\n\n/g, '<hr><small></small>');
+        ;
+      size = init;
+      document.html.style.fontSize = size + 'px';
+      pre1.innerHTML = document.text;
+      pre2.innerHTML = '';
+      document.html.onclick = reset;
+      longest = document.text.split(/\r\n|\r|\n/g).sort(function (a, b) { return b.length - a.length; })[0].length;
+      fit();
+    }
+  };
+  xhr.send();
+};
+
+window.fit = function() {
+  window.scrollTo(0, 0);
+  if (document.html.clientWidth < document.html.clientHeight && longest > (document.html.clientWidth / minsizer.clientWidth / 2))
+    fitwide = true;
+  if (document.html.clientHeight < document.body.clientHeight && !fitwide) {
+    let lines = document.text.split(/\r\n|\r|\n/g);
+    let half = Math.floor(lines.length / 2)
+    if (lines[half-1].match(/^\s*\[/)) half -= 1;
+    if (lines[half-1].replace(/ /g, '').length == 0) {
+      half -= 0;
+    }else{
+      if (lines[half-1].replace(/ /g, '').length < lines[half].replace(/ /g, '').length) {
+        half -= 1;
+      }
+    }
+    if (lines[half-1].match(/^\s*\[/)) half -= 1;
+    if (lines[half-1].replace(/\s+/g, '').length == 0) {
+      lines.splice(half-1, 1);
+    }
+    if (lines[half].replace(/\s+/g, '').length == 0) {
+      lines.splice(half, 1);
+    }
+    if (lines[half-1].match(/\<hr\>\<small\>/)) {
+      let chops = lines[half-1].split(/\<hr\>\<small\>/);
+      lines[half-1] = chops[0];
+      lines.splice(half, 0, '<hr><small>' + chops[1]);
+    }
+    if (lines[half-2].match(/\<hr\>\<small\>/)) {
+      half -= 1;
+      let chops = lines[half-1].split(/\<hr\>\<small\>/);
+      lines[half-1] = chops[0];
+      lines.splice(half, 0, '<hr><small>' + chops[1]);
+    }
+    if (lines[half+2].match(/\<hr\>\<small\>/)) {
+      half += 1;
+    }
+    if (lines[half+1].match(/\<hr\>\<small\>/)) {
+      half += 1;
+    }
+    if (lines[half].match(/.+\<hr\>\<small\>/)) {
+      let chops = lines[half].split(/\<hr\>\<small\>/);
+      lines.splice(half-1, 0, chops[0]);
+      lines[half] = chops[1];
+    }
+    let p1 = lines.slice(0, half);
+    let p2 = lines.slice(half);
+    pre1.innerHTML = p1.join('\n');
+    pre2.innerHTML = p2.join('\n');
+  }
+  if (document.html.clientWidth + minsizer.clientWidth / 3 < document.body.clientWidth || (!fitwide && document.html.clientHeight + minsizer.clientWidth / 3 < document.body.clientHeight)) {
+    if (size > min) {
+      if (size > 20) {
+        size -= 2;
+      }else if (size > 15) {
+        size -= 1;
+      }else{
+        size -= 0.5;
+      }
+      document.html.style.fontSize = size + 'px';
+      refit();
+    }else{
+      if (fitwide) {
+        needscroll = document.body.clientHeight - document.html.clientHeight;
+        currentscroll = 0;
+        scroller = setTimeout(scroll, 10);
+      }
+    }
+  }else{
+    if (fitwide) {
+      needscroll = document.body.clientHeight - document.html.clientHeight;
+      currentscroll = 0;
+      scroller = setTimeout(scroll, 10);
+    }
+  }
+  window.scrollTo(0, 0);
+};
+
+window.scroll = function() {
+  if (!scroller) return;
+  needscroll = document.body.clientHeight - document.html.clientHeight;
+  let coefficient = 60 / (document.body.clientWidth / cursizer.clientWidth);
+  let coef2 = 80 / (document.html.clientHeight / cursizer.clientHeight);
+  let coef3 = document.html.clientHeight / needscroll; //) > 2 ? 2 : 1;
+  let delta = 0.1 * (coefficient / coef2 / coef3);
+  currentscroll += delta;
+  window.scrollTo(0, currentscroll);
+  if (!scroller) return;
+  scroller = setTimeout(function() {
+    window.requestAnimationFrame(scroll)
+  }, 10);
+};
+
+window.rotate = function(event) {
+  fitwide = false;
+  size = init;
+  document.html.style.fontSize = size + 'px';
+  if (document.text) {
+    pre1.innerHTML = document.text;
+    pre2.innerHTML = '';
+    refit();
+  }
+};
+
+window.refit = function() {
+  window.scrollTo(0, 0);
+  setTimeout(function() {
+    window.requestAnimationFrame(fit);
+  }, 100);
+};
+
+window.addEventListener('DOMContentLoaded', function(event) {
+  window.pre1 = document.getElementById('pre1');
+  window.pre2 = document.getElementById('pre2');
+  window.minsizer = document.getElementById('minsizer');
+  window.minsizer.style.fontSize = min + 'px';
+  window.cursizer = document.getElementById('cursizer');
+  reset(event);
+});
+window.addEventListener("orientationchange", rotate);
+document.addEventListener('touchmove', function(event) {
+  clearTimeout(scroller); scroller = false;
+});
+document.addEventListener('touchend', function(event) {
+  if (fitwide) {
+    clearTimeout(scroller); scroller = false;
+    setTimeout(function() {
+      currentscroll = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop);
+      needscroll = document.body.clientHeight - document.html.clientHeight - currentscroll;
+      if (needscroll > 1) scroller = setTimeout(scroll, 10);
+    }, 50);
+  }
+});
+</script>
+<body>
+<pre id="pre1"></pre>
+<pre id="pre2"></pre>
+<span class="sizer" id="minsizer">i</span>
+<span class="sizer" id="cursizer">i</span>
