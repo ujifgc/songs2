@@ -183,8 +183,10 @@ window.loadsong = function(url) {
 };
 
 window.fit = function() {
-  window.scrollTo(0, 0);
+  let lines = document.text.split(/\r\n|\r|\n/g);
   if (document.html.clientWidth < document.html.clientHeight && longest > (document.html.clientWidth / minsizer.clientWidth / 2))
+    fitwide = true;
+  if (longest * 2 * minsizer.clientWidth > lines.length * 2 * minsizer.clientHeight)
     fitwide = true;
   if (document.html.clientHeight < document.body.clientHeight && !fitwide) {
     let lines = document.text.split(/\r\n|\r|\n/g);
