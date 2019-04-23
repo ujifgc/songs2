@@ -189,7 +189,6 @@ window.fit = function() {
   if (longest * 2 * minsizer.clientWidth > lines.length * 2 * minsizer.clientHeight)
     fitwide = true;
   if (document.html.clientHeight < document.body.clientHeight && !fitwide) {
-    let lines = document.text.split(/\r\n|\r|\n/g);
     let half = Math.floor(lines.length / 2)
     if (lines[half-1].match(/^\s*\[/)) half -= 1;
     if (lines[half-1].replace(/ /g, '').length == 0) {
