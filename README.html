@@ -45,9 +45,52 @@ hr + small {
 <script>
 "use strict";
 
+function heredoc(fn) {
+  return fn.toString().match(/\/\*\s*([\s\S]*?)\s*\*\//m)[1];
+};
+
+var list_txt = heredoc(function () {/*
+other\Мечта.md
+other\На заре.md
+other\Поезд в огне.md
+other\Равнодушие.md
+other\Ромашки.md
+other\Всё идет по плану.md
+other\Король шаманов.md
+other\Медуза.md
+other\True Love Waits.md
+other\Where is my mind.md
+other\Zombie.md
+other\Баллада о трёх сыновьях.md
+other\Riptide.md
+other\Roar.md
+other\Russian girl.md
+other\Somebody to love.md
+other\Take me home, country road.md
+other\Nightcall.md
+other\Over The Love.md
+other\Dont stop me now.md
+other\Halo.md
+other\I went too far.md
+other\Kids.md
+other\Apres moi.md
+other\Cosmic love.md
+other\Creep.md
+author\по проводам.md
+author\последний день лета.md
+author\твои глаза.md
+author\чемоданы.md
+author\моя дорога.md
+author\некуда бежать.md
+author\патефон.md
+author\README.md
+author\заодно.md
+author\земляника.md
+*/});
+
 var init = 30, size = init, min = 11, longest = 0, needscroll = 0, currentscroll = 0, scroller = false, fitwide = false;
 
-window.reset = function(event) {
+window.reset_original = function(event) {
   fitwide = false;
   if (scroller) { clearTimeout(scroller); scroller = false; }
   window.scrollTo(0, 0);
@@ -80,6 +123,32 @@ window.reset = function(event) {
     };
     xhr.send();
   }
+};
+
+window.reset = function(event) {
+  fitwide = false;
+  if (scroller) { clearTimeout(scroller); scroller = false; }
+  window.scrollTo(0, 0);
+  document.html = document.body.parentNode;
+  document.text = false;
+  if (event.type != 'DOMContentLoaded' && event.target != document.html) return false;
+  size = init;
+  document.html.onclick = false;
+  document.html.style.fontSize = size + 'px';
+  let songs = list_txt.split(/\r\n|\r|\n/);
+  let list1 = '<ul>', list2 = '<ul>';
+  for (let j in songs) {
+    let link = '<li><a href="' + songs[j] + '" onclick="loadsong(this.href);return false">' + songs[j].replace(/.*\\(.*)?.md/, '$1') + "</a>";
+    if (songs[j].match(/author\\/)) {
+      list2 += link;
+    }else{
+      list1 += link;
+    }
+  }
+  list1 += '</ul>';
+  list2 += '</ul>';
+  pre1.innerHTML = list1;
+  pre2.innerHTML = list2;
 };
 
 window.loadsong = function(url) {

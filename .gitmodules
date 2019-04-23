@@ -1,0 +1,6 @@
+[submodule "author"]
+	path = author
+	url = https://github.com/kshkn/lyrics.git
+[submodule "other"]
+	path = other
+	url = git@github.com:ujifgc/songs.git
